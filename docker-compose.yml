@@ -1,0 +1,26 @@
+version: '2'
+services:
+    db:
+        image: mysql:5.5
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=ssi_local
+        volumes:
+            - ./db:/media/db
+    base:
+        build: .
+        volumes:
+            - .:/app/
+    web:
+        extends:
+            service: base
+        ports:
+            - "8000:80"
+        depends_on:
+            - db
+    manage:
+        extends:
+            service: base
+        entrypoint: ./manage.py
+        links:
+            - db
